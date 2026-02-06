@@ -488,6 +488,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pinSpawner: {fileID: 1916800749}
   throwblePinCount: 2
+  stuckPinCount: -1
+  stuckPinAngles: 000000006400000096000000c80000002c010000
 --- !u!1 &1916800747
 GameObject:
   m_ObjectHideFlags: 0
@@ -533,6 +535,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pinPrefab: {fileID: 2902838050016229743, guid: 645d1d2fd4ecb3f448fd3da7a8ee5c88, type: 3}
+  targetTransform: {fileID: 272232500}
+  targetPosition: {x: 0, y: 2, z: 0}
+  targetRadius: 0.8
+  pinLength: 1.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
