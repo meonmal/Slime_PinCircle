@@ -1,0 +1,4 @@
+repository "Slime_PinCircle/Slime_PinCircle@14569440717632@cloud"
+  path "/"
+    br "/main"
+    co "/main"
