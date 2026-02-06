@@ -1,8 +1,13 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PinSpawner : MonoBehaviour
 {
     [Header("Commons")]
+    // StageController 컴포넌트 정보
+    [SerializeField]
+    private StageController stageController;
     // 핀 프리팹
     [SerializeField]
     private GameObject pinPrefab;
@@ -21,10 +26,41 @@ public class PinSpawner : MonoBehaviour
     [SerializeField]
     private float pinLength = 1.5f;
 
+    [Header("Throwble Pin")]
+    // 게임 도중 마우스 클릭으로 배치되는 핀의 각도
+    [SerializeField]
+    private float bottomAngle = 270;
+    // 하단에 생성되는 던져야 할 핀 오브젝트 리스트
+    private List<Pin> throwablePins = new List<Pin>();
+
+    private void Update()
+    {
+        // 게임 진행 도중 플레이어가 마우스 왼쪽 버튼을 클릭하면 실행
+        if(Input.GetMouseButtonDown(0) && throwablePins.Count > 0)
+        {
+            // throwablePins 리스트에 저장된 첫번째 핀을 과녁에 배치
+            SetInPinStuckToTarget(throwablePins[0].transform, bottomAngle);
+            // 방금 과녁에 배치한 첫번째 핀 요소를 리스트에서 삭제
+            throwablePins.RemoveAt(0);
+
+            // 과녁에 배치되지 않은 throwablePins 리스트의 모든 핀 위치 이동
+            for(int i=0; i<throwablePins.Count; i++)
+            {
+                throwablePins[i].MoveOneStep(stageController.TPinDistance);
+            }
+        }
+    }
+
     public void SpawnThrowablePin(Vector3 position)
     {
         // 핀 오브젝트 생성
-        Instantiate(pinPrefab, position, Quaternion.identity);
+        GameObject clone = Instantiate(pinPrefab, position, Quaternion.identity);
+
+        // "Pin" 컴포넌트 정보
+        Pin pin = clone.GetComponent<Pin>();
+
+        // 방금 생성된 핀 오브젝트의 "Pin" 컴포넌트를 리스트에 추가
+        throwablePins.Add(pin);
     }
 
     public void spawnStuckPin(float angle)
