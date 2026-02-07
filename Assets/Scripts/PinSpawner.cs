@@ -11,6 +11,12 @@ public class PinSpawner : MonoBehaviour
     // 핀 프리팹
     [SerializeField]
     private GameObject pinPrefab;
+    // 핀에 숫자를 표시하는 Text UI
+    [SerializeField]
+    private GameObject textPinIndexPrefab;
+    // 핀 Text가 배치되는 Panel Transform
+    [SerializeField]
+    private Transform textParent;
 
     [Header("Stuck Pin")]
     // 과녁 오브젝트의 Trnasform
@@ -35,6 +41,12 @@ public class PinSpawner : MonoBehaviour
 
     private void Update()
     {
+        // 게임오버시 실행x 
+        if(stageController.IsGameOver == true)
+        {
+            return;
+        }
+
         // 게임 진행 도중 플레이어가 마우스 왼쪽 버튼을 클릭하면 실행
         if(Input.GetMouseButtonDown(0) && throwablePins.Count > 0)
         {
@@ -51,25 +63,36 @@ public class PinSpawner : MonoBehaviour
         }
     }
 
-    public void SpawnThrowablePin(Vector3 position)
+    public void SpawnThrowablePin(Vector3 position, int index)
     {
         // 핀 오브젝트 생성
         GameObject clone = Instantiate(pinPrefab, position, Quaternion.identity);
 
         // "Pin" 컴포넌트 정보
         Pin pin = clone.GetComponent<Pin>();
+        pin.Setup(stageController);
 
         // 방금 생성된 핀 오브젝트의 "Pin" 컴포넌트를 리스트에 추가
         throwablePins.Add(pin);
+
+        // 핀 오브젝트에 표시되는 Text UI 생성
+        SpawnTextUI(clone.transform, index);
     }
 
-    public void spawnStuckPin(float angle)
+    public void SpawnStuckPin(float angle, int index)
     {
         // 핀 오브젝트 생성
         GameObject clone = Instantiate(pinPrefab);
 
+        // "Pin" 컴포넌트 정보를 얻어와 Setup() 함수 호출
+        Pin pin = clone.GetComponent<Pin>();
+        pin.Setup(stageController);
+
         // 핀이 과녁에 배치될 수 있도록 설정
         SetInPinStuckToTarget(clone.transform, angle);
+
+        // 핀 오브젝트에 표시되는 Text UI 생성
+        SpawnTextUI(clone.transform, index);
     }
 
     private void SetInPinStuckToTarget(Transform pin, float angle)
@@ -82,5 +105,17 @@ public class PinSpawner : MonoBehaviour
         pin.SetParent(targetTransform);
         // 핀이 과녁에 배치되었을 때 설정
         pin.GetComponent<Pin>().SetInPinStuckToTarget();
+    }
+
+    private void SpawnTextUI(Transform target, int index)
+    {
+        // 숫자를 아타내는 Text UI를 생성하고, 부모를 textParent로 설정
+        GameObject textClone = Instantiate(textPinIndexPrefab, textParent);
+        // 계층 설정으로 바뀐 크기를 다시 (1, 1, 1)로 설정
+        textClone.transform.localScale = Vector3.one;
+        // UI가 쫓아다닐 대상 설정
+        textClone.GetComponent<FollowTargetUI>().Setup(target);
+        // UI에 표시되는 텍스트 내용
+        textClone.GetComponent<TMPro.TextMeshProUGUI>().text = index.ToString();
     }
 }
