@@ -60,6 +60,8 @@ public class PinSpawner : MonoBehaviour
             {
                 throwablePins[i].MoveOneStep(stageController.TPinDistance);
             }
+
+            stageController.DecreaseThrowablePin();
         }
     }
 

@@ -220,6 +220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotateSpeed: 50
+  maxRotateSpeed: 500
   rotateAxis: {x: 0, y: 0, z: 1}
 --- !u!1 &352329978
 GameObject:
@@ -230,6 +231,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 352329979}
+  - component: {fileID: 352329980}
   m_Layer: 5
   m_Name: PanelNumbering
   m_TagString: Untagged
@@ -256,6 +258,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 380}
   m_SizeDelta: {x: 120, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &352329980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352329978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9ced490e3f073d4f9cb2eac197a06a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotateSpeed: 0
+  maxRotateSpeed: 500
+  rotateAxis: {x: 0, y: 0, z: 1}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -603,6 +620,7 @@ MonoBehaviour:
   pinSpawner: {fileID: 1916800749}
   mainCamera: {fileID: 519420031}
   rotatorTarget: {fileID: 272232501}
+  rotatorIndexPanel: {fileID: 352329980}
   throwablePinCount: 5
   stuckPinCount: 5
   stuckPinAngles: 

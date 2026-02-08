@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class StageController : MonoBehaviour
@@ -11,6 +12,9 @@ public class StageController : MonoBehaviour
     // 핀이 배치되는 타겟 오브젝트 회전체
     [SerializeField]
     private Rotator rotatorTarget;
+    // 핀 인덱트 Text가 배치된 Panel 오브젝트 회전체
+    [SerializeField]
+    private Rotator rotatorIndexPanel;
     // 현재 스테이지를 클리어하기 위해 던져야 하는 핀 갯수
     [SerializeField]
     private int throwablePinCount;
@@ -28,6 +32,8 @@ public class StageController : MonoBehaviour
 
     // 게임오버 되었을 때 배경 색상
     private Color failBackGroundColor = new Color(0.4f, 0.1f, 0.1f);
+    // 게임클리어가 되었을 때 배경 색상
+    private Color clearBackgroundColor = new Color(0, 0.5f, 0.25f);
     
     // 게임 제어를 위한 변수
     public bool IsGameOver { set; get; } = false;
@@ -78,5 +84,39 @@ public class StageController : MonoBehaviour
 
         // 과녁 오브젝트 회전 중지
         rotatorTarget.Stop();
+    }
+
+    public void DecreaseThrowablePin()
+    {
+        throwablePinCount--;
+
+        // 모든 핀을 과녁에 명중했을 때 Clear 처리
+        if(throwablePinCount <= 0)
+        {
+            // 일반 메소드로 작성하면 마지막 핀을 던졌을 때
+            // 핀의 충돌 여부에 관계 없이 무조건 클리어 된다.
+            StartCoroutine(nameof(GameClear));
+        }
+    }
+
+    private IEnumerator GameClear()
+    {
+        // Pin의 충돌 검사 이후에 GameClear()가 실행될 수 잇도록
+        // 짧은 시간 대기한 이후 IsGameClear가 false이면 GameClear() 함수를 실행
+        yield return new WaitForSeconds(0.1f);
+
+        // GameOver()가 실행되어 IsGaemOver가 true면 코루틴 중지
+        if(IsGameOver == true)
+        {
+            yield break;
+        }
+
+        // 배경 색상 변경
+        mainCamera.backgroundColor = clearBackgroundColor;
+
+        // 과녁 오브젝트를 빠르게 회전
+        rotatorTarget.RotateFast();
+        // Text가 배치되어 있는 Panel을 빠르게 회전
+        rotatorIndexPanel.RotateFast();
     }
 }

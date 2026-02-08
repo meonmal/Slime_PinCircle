@@ -5,6 +5,8 @@ public class Rotator : MonoBehaviour
     // 오브젝트의 회전 속도
     [SerializeField]
     private float rotateSpeed = 50f;
+    [SerializeField]
+    private float maxRotateSpeed = 500f;
     // 오브젝트의 회전 방향
     [SerializeField]
     private Vector3 rotateAxis = Vector3.forward;
@@ -18,5 +20,10 @@ public class Rotator : MonoBehaviour
     public void Stop()
     {
         rotateSpeed = 0;
+    }
+
+    public void RotateFast()
+    {
+        rotateSpeed = maxRotateSpeed;
     }
 }
