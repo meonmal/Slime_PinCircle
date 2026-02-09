@@ -39,16 +39,24 @@ public class PinSpawner : MonoBehaviour
     // 하단에 생성되는 던져야 할 핀 오브젝트 리스트
     private List<Pin> throwablePins = new List<Pin>();
 
+    // 사운드 재생을 위한 AudioSource 컴포넌트
+    private AudioSource audioSource;
+
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
+
     private void Update()
     {
         // 게임오버시 실행x 
-        if(stageController.IsGameOver == true)
+        if (stageController.IsGameStart == false || stageController.IsGameOver == true)
         {
             return;
         }
 
         // 게임 진행 도중 플레이어가 마우스 왼쪽 버튼을 클릭하면 실행
-        if(Input.GetMouseButtonDown(0) && throwablePins.Count > 0)
+        if (Input.GetMouseButtonDown(0) && throwablePins.Count > 0)
         {
             // throwablePins 리스트에 저장된 첫번째 핀을 과녁에 배치
             SetInPinStuckToTarget(throwablePins[0].transform, bottomAngle);
@@ -62,6 +70,9 @@ public class PinSpawner : MonoBehaviour
             }
 
             stageController.DecreaseThrowablePin();
+
+            // 과녁에 핀이 배치될 때 사운드 재생
+            audioSource.Play();
         }
     }
 

@@ -15,6 +15,9 @@ public class StageController : MonoBehaviour
     // 핀 인덱트 Text가 배치된 Panel 오브젝트 회전체
     [SerializeField]
     private Rotator rotatorIndexPanel;
+    // 메인 메뉴 이동을 위한 MainMenu 컴포넌트
+    [SerializeField]
+    private MainMenu mainMenu;
     // 현재 스테이지를 클리어하기 위해 던져야 하는 핀 갯수
     [SerializeField]
     private int throwablePinCount;
@@ -24,6 +27,15 @@ public class StageController : MonoBehaviour
     // 스테이지 시작 시 과녁에 고정되어 있는 모든 핀의 각도 배열
     [SerializeField]
     private int[] stuckPinAngles;
+
+    // 게임 오버 사운드
+    [SerializeField]
+    private AudioClip audioGameOver;
+    // 게임 클리어 사운드
+    [SerializeField]
+    private AudioClip audioGameClear;
+    // 사운드 재생을 위한 AudioSource 컴포넌트
+    private AudioSource audioSource;
 
     // 게임 화면 하단에 배치되는 던져야 할 핀들의 첫 번째 핀 위치
     private Vector3 firstTPinPosition = Vector3.down * 2;
@@ -37,9 +49,12 @@ public class StageController : MonoBehaviour
     
     // 게임 제어를 위한 변수
     public bool IsGameOver { set; get; } = false;
+    public bool IsGameStart { set; get; } = false;
 
     private void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
+
         // 게임 하단에 배치되는 던져야 하는 핀 오브젝트 생성
         for (int i = 0; i < throwablePinCount; i++)
         {
@@ -84,6 +99,11 @@ public class StageController : MonoBehaviour
 
         // 과녁 오브젝트 회전 중지
         rotatorTarget.Stop();
+
+        PlaySound(audioGameOver);
+
+        // 0.5초 대기 후 스테이지 종료 이벤트 처리
+        StartCoroutine(nameof(StageExit), 0.5f);
     }
 
     public void DecreaseThrowablePin()
@@ -118,5 +138,23 @@ public class StageController : MonoBehaviour
         rotatorTarget.RotateFast();
         // Text가 배치되어 있는 Panel을 빠르게 회전
         rotatorIndexPanel.RotateFast();
+
+        PlaySound(audioGameClear);
+
+        StartCoroutine(nameof(StageExit), 1f);
+    }
+
+    private IEnumerator StageExit(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+
+        mainMenu.StageExit();
+    }
+
+    private void PlaySound(AudioClip newClip)
+    {
+        audioSource.Stop();
+        audioSource.clip = newClip;
+        audioSource.Play();
     }
 }
