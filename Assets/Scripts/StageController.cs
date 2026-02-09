@@ -139,6 +139,11 @@ public class StageController : MonoBehaviour
         // Text가 배치되어 있는 Panel을 빠르게 회전
         rotatorIndexPanel.RotateFast();
 
+        // 현재 스테이지 레벨 정보를 얻어와 레벨을 +1 한다
+        // Get할 때 저장된 정보가 없으면 0이 반환되기 때문에 index가 0부터 시작하게 된다.
+        int index = PlayerPrefs.GetInt(Constants.StageLevel);
+        PlayerPrefs.SetInt(Constants.StageLevel, index + 1);
+
         PlaySound(audioGameClear);
 
         StartCoroutine(nameof(StageExit), 1f);
