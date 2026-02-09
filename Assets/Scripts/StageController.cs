@@ -53,6 +53,8 @@ public class StageController : MonoBehaviour
 
     private void Awake()
     {
+        Application.targetFrameRate = 60;
+
         audioSource = GetComponent<AudioSource>();
 
         // 게임 하단에 배치되는 던져야 하는 핀 오브젝트 생성
